@@ -1,7 +1,9 @@
 ﻿#include <WS2tcpip.h> 
 #include <iostream>
 #include <string>
-#include <ctre.hpp>
+#include <codecvt>
+#include <locale>
+#include "UnicodeConversions.h"
 #include "SharedVariablesDispatcher.h"
 #include "Logger.h"
 
@@ -11,12 +13,17 @@ constexpr int MAX_CLIENTS = 1;
 constexpr int DEFAULT_BUFFER_SIZE = 256;
 constexpr PCSTR DEFAULT_PORT = "1049";
 
-constexpr std::string_view DEFAULT_LOG_FILEPATH = "Logs.txt";
-
 int main()
 {
     setlocale(LC_ALL, "Ukrainian");
     SetConsoleOutputCP(1251);
+
+    /*std::wstring cum = L"РоманківfСвя";
+    std::string cumt = wide_string_to_string(cum);
+    std::wcout << cum.size() * sizeof(wchar_t) << std::endl;
+    std::cout << cumt << cumt.size() * sizeof(char) << std::endl;
+    std::wstring cumtt = string_to_wide_string(cumt);
+    std::wcout << cumtt << cumtt.size() * sizeof(wchar_t) << std::endl;*/
 
     Logger logger(L"1.txt");
     logger.recv(L"cum");
@@ -109,12 +116,10 @@ int main()
 
             // ??????????????????????????????????
             // Echo the buffer back to the sender
-            std::wstring result = disp.analyzeClientsInput(std::wstring(&recvbuf[0], &recvbuf[255]));
-            char* sendRes = new char[256];
-            size_t i;
-            wcstombs_s(&i, sendRes, 256, result.data(), 256);
-            int iSendResult = send(clientSocket, sendRes, i, 0);
-            delete[] sendRes;
+            std::wstring result = disp.analyzeClientsInput(stringToWideString(std::string(recvbuf)));
+            std::wcout << result << result.size() * sizeof(wchar_t) << std::endl;
+            std::string resstr = wideStringToString(result);
+            int iSendResult = send(clientSocket, resstr.data(), wideStringToString(result).size() + 1, 0);
             if (iSendResult == SOCKET_ERROR) {
                 std::cout << "send failed with error: " << WSAGetLastError() << std::endl;
                 closesocket(clientSocket);

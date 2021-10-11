@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "../SocketServer/Logger.h"
+#include "../SocketServer/UnicodeConversions.h"
 
 #pragma comment (lib, "Ws2_32.lib") // link Ws2_32.lib
 
@@ -72,8 +73,10 @@ int main()
     }
     
     // Send an initial buffer
-    char sendbuf[DEFAULT_BUFFER_SIZE] = "SET 1 TRU";
-    const int sendRes = send(connectSocket, sendbuf, DEFAULT_BUFFER_SIZE, 0);
+    std::wstring sendstr;
+    std::getline(std::wcin, sendstr);
+    std::string sendstrconv = wideStringToString(sendstr);
+    const int sendRes = send(connectSocket, sendstrconv.data(), sendstrconv.size() + 1, 0);
     if (sendRes == SOCKET_ERROR) {
         std::cout << "send failed with error: " <<  WSAGetLastError() << std::endl;
         closesocket(connectSocket);
@@ -101,11 +104,7 @@ int main()
         if (bytesReceived > 0)
         {
             std::cout << "Bytes received: " << bytesReceived << std::endl;
-            wchar_t* outputRes = new wchar_t[256];
-            size_t num;
-            mbstowcs_s(&num, outputRes, recvbuflen, recvbuf, recvbuflen);
-            std::wcout << outputRes<< std::endl;
-            delete[] outputRes;
+            std::wcout << stringToWideString(std::string(recvbuf)) << std::endl;
         }
         else if (bytesReceived == 0)
             std::cout << "Connection closed" << std::endl;

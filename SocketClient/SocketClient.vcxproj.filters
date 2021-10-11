@@ -26,5 +26,8 @@
     <ClInclude Include="..\SocketServer\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\SocketServer\UnicodeConversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
