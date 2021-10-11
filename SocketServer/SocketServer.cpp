@@ -18,9 +18,9 @@ int main()
     setlocale(LC_ALL, "Ukrainian");
     SetConsoleOutputCP(1251);
 
-    Logger logger("1.txt");
-    logger.recv("cum");
-    logger.send("Fff");
+    Logger logger(L"1.txt");
+    logger.recv(L"cum");
+    logger.send(L"Fff");
     SharedVariablesDispatcher disp;
     std::wcout << disp.who();
 

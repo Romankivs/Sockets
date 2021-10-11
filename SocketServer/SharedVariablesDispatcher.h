@@ -17,7 +17,7 @@ class SharedVariablesDispatcher
 public:
 	SharedVariablesDispatcher();
 	// perform commands according to clients input and return command output or error message
-	std::string analyzeClientsInput(std::string input);
+	std::wstring analyzeClientsInput(std::wstring input);
 
 	// return info about the author
 	std::wstring who();

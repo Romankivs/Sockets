@@ -9,12 +9,12 @@
 class Logger
 {
 public:
-	Logger(std::string outputFileName);
+	Logger(std::wstring outputFileName);
 	~Logger();
-	void recv(std::string command);
-	void send(std::string command);
+	void recv(std::wstring command);
+	void send(std::wstring command);
 private:
-	void log(std::string message);
-	std::ofstream outputFile;
+	void log(std::wstring message);
+	std::wofstream outputFile;
 };
 

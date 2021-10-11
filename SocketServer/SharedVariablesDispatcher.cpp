@@ -8,9 +8,9 @@ SharedVariablesDispatcher::SharedVariablesDispatcher()
 	getRand = []() { return distribution(generator); };
 }
 
-std::string SharedVariablesDispatcher::analyzeClientsInput(std::string input)
+std::wstring SharedVariablesDispatcher::analyzeClientsInput(std::wstring input)
 {
-	return std::string();
+	return std::wstring();
 }
 
 std::wstring SharedVariablesDispatcher::who()
