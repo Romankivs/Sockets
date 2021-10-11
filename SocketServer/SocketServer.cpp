@@ -22,7 +22,6 @@ int main()
     logger.recv(L"cum");
     logger.send(L"Fff");
     SharedVariablesDispatcher disp;
-    std::wcout << disp.who();
 
     // Init WinSock
     WSAData wsData;
