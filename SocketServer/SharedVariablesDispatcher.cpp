@@ -7,9 +7,10 @@ SharedVariablesDispatcher::SharedVariablesDispatcher()
 	commands.insert({ L"Who", &SharedVariablesDispatcher::who });
 	commands.insert({ L"SET", &SharedVariablesDispatcher::set });
 
-	static std::default_random_engine generator;
-	static std::uniform_int_distribution<int> distribution(-1, 1);
-	getRand = []() { return distribution(generator); };
+	generator = std::default_random_engine();
+	generator.seed((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
+	distribution = std::uniform_int_distribution<int>(-5, 5);
+	getRand = [&]() { return distribution(generator); };
 }
 
 std::wstring SharedVariablesDispatcher::analyzeClientsInput(std::wstring input)

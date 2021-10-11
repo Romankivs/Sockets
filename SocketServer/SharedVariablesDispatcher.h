@@ -5,6 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include <string>
+#include <chrono>
 #include <sstream>
 
 struct Variable
@@ -38,6 +39,8 @@ public:
 private:
 	std::array<Variable, NUMBER_OF_VARIABLES> variables;
 	std::unordered_map<std::wstring, std::wstring(SharedVariablesDispatcher::*)(std::vector<std::wstring>)> commands;
+	std::default_random_engine generator;
+	std::uniform_int_distribution<int> distribution;
 	std::function<int(void)> getRand;
 };
 

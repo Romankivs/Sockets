@@ -10,6 +10,9 @@ constexpr PCSTR DEFAULT_PORT = "1049";
 
 int main()
 {
+    setlocale(LC_ALL, "Ukrainian");
+    SetConsoleOutputCP(1251);
+
     // Init WinSock
     WSAData wsData;
     WORD wsVer = MAKEWORD(2, 2);
@@ -67,9 +70,9 @@ int main()
         WSACleanup();
         return 1;
     }
-
+    
     // Send an initial buffer
-    char sendbuf[DEFAULT_BUFFER_SIZE] = "ABOBA";
+    char sendbuf[DEFAULT_BUFFER_SIZE] = "SET 1 TRU";
     const int sendRes = send(connectSocket, sendbuf, DEFAULT_BUFFER_SIZE, 0);
     if (sendRes == SOCKET_ERROR) {
         std::cout << "send failed with error: " <<  WSAGetLastError() << std::endl;
@@ -98,7 +101,11 @@ int main()
         if (bytesReceived > 0)
         {
             std::cout << "Bytes received: " << bytesReceived << std::endl;
-            std::cout << recvbuf << std::endl;
+            wchar_t* outputRes = new wchar_t[256];
+            size_t num;
+            mbstowcs_s(&num, outputRes, recvbuflen, recvbuf, recvbuflen);
+            std::wcout << outputRes<< std::endl;
+            delete[] outputRes;
         }
         else if (bytesReceived == 0)
             std::cout << "Connection closed" << std::endl;

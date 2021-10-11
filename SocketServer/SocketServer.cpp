@@ -107,8 +107,14 @@ int main()
 
             std::cout << recvbuf << std::endl;
 
+            // ??????????????????????????????????
             // Echo the buffer back to the sender
-            int iSendResult = send(clientSocket, recvbuf, bytesReceived, 0);
+            std::wstring result = disp.analyzeClientsInput(std::wstring(&recvbuf[0], &recvbuf[255]));
+            char* sendRes = new char[256];
+            size_t i;
+            wcstombs_s(&i, sendRes, 256, result.data(), 256);
+            int iSendResult = send(clientSocket, sendRes, i, 0);
+            delete[] sendRes;
             if (iSendResult == SOCKET_ERROR) {
                 std::cout << "send failed with error: " << WSAGetLastError() << std::endl;
                 closesocket(clientSocket);
