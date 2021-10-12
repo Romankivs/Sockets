@@ -29,3 +29,4 @@ void Logger::log(std::wstring message)
 	localtime_s(&tm, &now);
 	outputFile << std::put_time(&tm, "%Y-%m-%d %X") << " : " << converted << '\n';
 }
+#include "Logger.h"

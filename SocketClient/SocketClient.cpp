@@ -1,16 +1,15 @@
-#include <WS2tcpip.h> 
-#include <iostream>
-#include <string>
-#include "../SocketServer/Logger.h"
-#include "../SocketServer/UnicodeConversions.h"
-
+#include "TCPSocket.h"
 #pragma comment (lib, "Ws2_32.lib") // link Ws2_32.lib
 
 constexpr int DEFAULT_BUFFER_SIZE = 256;
 constexpr PCSTR DEFAULT_PORT = "1049";
 
+#define DEFAULT_LOG_FILE_PATH L"ClientLogs.txt"
+
 int main()
 {
+    Logger socketInfoLogger(DEFAULT_LOG_FILE_PATH);
+
     setlocale(LC_ALL, "Ukrainian");
     SetConsoleOutputCP(1251);
 
@@ -42,23 +41,17 @@ int main()
     }
 
     // Attempt to connect to an address until one succeeds
-    SOCKET connectSocket = INVALID_SOCKET;
+    TCPSocket connectSocket(INVALID_SOCKET, &socketInfoLogger);
     for (struct addrinfo* ptr = result; ptr != NULL; ptr = ptr->ai_next) {
 
         // Create a SOCKET for connecting to server
-        connectSocket = socket(ptr->ai_family, ptr->ai_socktype,
-            ptr->ai_protocol);
-        if (connectSocket == INVALID_SOCKET) {
-            std::cout << "socket failed with error: " << WSAGetLastError() << std::endl;
-            WSACleanup();
-            return 1;
-        }
+        connectSocket = TCPSocket(ptr, &socketInfoLogger);
 
         // Connect to server.
-        int connectRes = connect(connectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        int connectRes = connectSocket.tryToConnectSocket(ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
         if (connectRes == SOCKET_ERROR) {
-            closesocket(connectSocket);
-            connectSocket = INVALID_SOCKET;
+            connectSocket.closeSocket();
+            connectSocket.setUnderlyingSocket(INVALID_SOCKET);
             continue;
         }
         break;
@@ -66,7 +59,7 @@ int main()
 
     freeaddrinfo(result);
 
-    if (connectSocket == INVALID_SOCKET) {
+    if (connectSocket.getUnderlyingSocket() == INVALID_SOCKET) {
         std::cout << "Failed to connect to server!" << std::endl;
         WSACleanup();
         return 1;
@@ -77,27 +70,18 @@ int main()
         // Send an initial buffer
         std::wstring sendstr;
         std::getline(std::wcin, sendstr);
-        std::string sendstrconv = wideStringToString(sendstr);
-        if (sendstrconv == "QUIT")
+        if (sendstr == L"QUIT")
             break;
-        const int sendRes = send(connectSocket, sendstrconv.data(), sendstrconv.size() + 1, 0);
-        if (sendRes == SOCKET_ERROR) {
-            std::cout << "send failed with error: " << WSAGetLastError() << std::endl;
-            closesocket(connectSocket);
-            WSACleanup();
-            return 1;
-        }
+        int sendRes = connectSocket.sendSocket(sendstr);
         printf("Bytes Sent: %ld\n", sendRes);
 
         // Receive 
-        int bytesReceived;
-        char recvbuf[DEFAULT_BUFFER_SIZE];
-        const int recvbuflen = DEFAULT_BUFFER_SIZE;
-        bytesReceived = recv(connectSocket, recvbuf, recvbuflen, 0);
+        std::wstring recvbuf;
+        int bytesReceived = connectSocket.reciveSocket(recvbuf);
         if (bytesReceived > 0)
         {
             std::cout << "Bytes received: " << bytesReceived << std::endl;
-            std::wcout << stringToWideString(std::string(recvbuf)) << std::endl;
+            std::wcout << recvbuf << std::endl;
         }
         else if (bytesReceived == 0)
             std::cout << "Connection closed" << std::endl;
@@ -105,18 +89,9 @@ int main()
             std::cout << "recv failed with error: " << WSAGetLastError() << std::endl;
     }
 
-    // shutdown the connection since no more data will be sent
-    const int shutdownRes = shutdown(connectSocket, SD_SEND);
-    if (shutdownRes == SOCKET_ERROR) {
-        std::cout << "shutdown failed with error: " << WSAGetLastError() << std::endl;
-        closesocket(connectSocket);
-        WSACleanup();
-        return 1;
-    }
-
     system("pause");
     
     // cleanup
-    closesocket(connectSocket);
+    connectSocket.closeSocket();
     WSACleanup();
 }

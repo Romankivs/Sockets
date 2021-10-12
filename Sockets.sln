@@ -7,7 +7,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SocketServer", "SocketServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SocketClient", "SocketClient\SocketClient.vcxproj", "{9BF984F7-D093-4AC4-9BFB-0F624084BF55}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedSocket", "SharedSocket\SharedSocket.vcxitems", "{C8061420-D2FF-4E2A-A477-92E10D64D859}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedSocket\SharedSocket.vcxitems*{9bf984f7-d093-4ac4-9bfb-0f624084bf55}*SharedItemsImports = 4
+		SharedSocket\SharedSocket.vcxitems*{a1d4151d-044b-4b1c-a82f-ddc90e321e2b}*SharedItemsImports = 4
+		SharedSocket\SharedSocket.vcxitems*{c8061420-d2ff-4e2a-a477-92e10d64d859}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86

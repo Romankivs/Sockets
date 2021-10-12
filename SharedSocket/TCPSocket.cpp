@@ -23,8 +23,13 @@ void TCPSocket::bindSocket(const sockaddr* addr, int namelen)
     const int bindRes = bind(_socket, addr, namelen);
     if (bindRes == SOCKET_ERROR)
     {
-        cleanup("bind failed with error: " + WSAGetLastError());
+        cleanup("bind failed with error: " + std::to_string(WSAGetLastError()));
     }
+}
+
+int TCPSocket::tryToConnectSocket(const sockaddr* name, int namelen)
+{
+    return connect(_socket, name, namelen);
 }
 
 void TCPSocket::listenSocket(int maxClients)
@@ -32,7 +37,7 @@ void TCPSocket::listenSocket(int maxClients)
     const int listenRes = listen(_socket, maxClients);
     if (listenRes == SOCKET_ERROR)
     {
-        cleanup("listen failed with error: " + WSAGetLastError());
+        cleanup("listen failed with error: " + std::to_string(WSAGetLastError()));
     }
 }
 
@@ -40,7 +45,7 @@ TCPSocket TCPSocket::acceptSocket(sockaddr* addr, int* addrlen)
 {
     SOCKET clientSocket = accept(_socket, addr, addrlen);
     if (clientSocket == INVALID_SOCKET) {
-        cleanup("accept failed with error: " + WSAGetLastError());
+        cleanup("accept failed with error: " + std::to_string(WSAGetLastError()));
     }
     return TCPSocket(clientSocket, log);
 }
@@ -49,7 +54,7 @@ void TCPSocket::shutdownSocket(int how)
 {
     const int shutdownRes = shutdown(_socket, how);
     if (shutdownRes == SOCKET_ERROR) {
-        cleanup("shutdown failed with error: " + WSAGetLastError());
+        cleanup("shutdown failed with error: " + std::to_string(WSAGetLastError()));
     }
 }
 
@@ -63,7 +68,7 @@ int TCPSocket::reciveSocket(std::wstring& recivebuf)
     int bytesReceived = recv(_socket, socketBuffer, DEFAULT_SOCKET_BUFFER_SIZE, 0);
     if (bytesReceived == SOCKET_ERROR)
     {
-        cleanup("recv failed with error: " + WSAGetLastError());
+        cleanup("recv failed with error: " + std::to_string(WSAGetLastError()));
     }
     recivebuf = stringToWideString(std::string(socketBuffer));
     log->recv(recivebuf);
@@ -75,10 +80,20 @@ int TCPSocket::sendSocket(std::wstring sendbuf)
     std::string sendbufConverted = wideStringToString(sendbuf);
     int bytesSent = send(_socket, sendbufConverted.c_str(), sendbufConverted.size() + 1, 0);
     if (bytesSent == SOCKET_ERROR) {
-        cleanup("send failed with error: " + WSAGetLastError());
+        cleanup("send failed with error: " + std::to_string(WSAGetLastError()));
     }
     log->send(sendbuf);
     return bytesSent;
+}
+
+SOCKET TCPSocket::getUnderlyingSocket()
+{
+    return _socket;
+}
+
+void TCPSocket::setUnderlyingSocket(SOCKET sock)
+{
+    _socket = sock;
 }
 
 void TCPSocket::cleanup(const std::string& errorMessage)
@@ -86,5 +101,6 @@ void TCPSocket::cleanup(const std::string& errorMessage)
     std::cout << errorMessage << std::endl;
     closesocket(_socket);
     WSACleanup();
-    throw std::runtime_error(errorMessage);
+    system("pause");
+    std::exit(1);
 }
