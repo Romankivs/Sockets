@@ -1,14 +1,21 @@
 #include "TCPSocket.h"
 
-TCPSocket::TCPSocket(addrinfo* adressInfo)
+TCPSocket::TCPSocket(addrinfo* adressInfo, Logger* logger)
 {
     _socket = socket(adressInfo->ai_family, adressInfo->ai_socktype, adressInfo->ai_protocol);
     if (_socket == INVALID_SOCKET)
     {
         std::cout << "Creating listening socket failed with error: " << WSAGetLastError() << std::endl;
         WSACleanup();
-        std::terminate();
+        throw std::runtime_error("Failed creating socket");
     }
+    log = logger;
+}
+
+TCPSocket::TCPSocket(SOCKET otherSocket, Logger* logger)
+{
+    _socket = otherSocket;
+    log = logger;
 }
 
 void TCPSocket::bindSocket(const sockaddr* addr, int namelen)
@@ -29,11 +36,20 @@ void TCPSocket::listenSocket(int maxClients)
     }
 }
 
-void TCPSocket::acceptSocket(sockaddr* addr, int* addrlen)
+TCPSocket TCPSocket::acceptSocket(sockaddr* addr, int* addrlen)
 {
     SOCKET clientSocket = accept(_socket, addr, addrlen);
     if (clientSocket == INVALID_SOCKET) {
         cleanup("accept failed with error: " + WSAGetLastError());
+    }
+    return TCPSocket(clientSocket, log);
+}
+
+void TCPSocket::shutdownSocket(int how)
+{
+    const int shutdownRes = shutdown(_socket, how);
+    if (shutdownRes == SOCKET_ERROR) {
+        cleanup("shutdown failed with error: " + WSAGetLastError());
     }
 }
 
@@ -50,6 +66,7 @@ int TCPSocket::reciveSocket(std::wstring& recivebuf)
         cleanup("recv failed with error: " + WSAGetLastError());
     }
     recivebuf = stringToWideString(std::string(socketBuffer));
+    log->recv(recivebuf);
     return bytesReceived;
 }
 
@@ -60,6 +77,8 @@ int TCPSocket::sendSocket(std::wstring sendbuf)
     if (bytesSent == SOCKET_ERROR) {
         cleanup("send failed with error: " + WSAGetLastError());
     }
+    log->send(sendbuf);
+    return bytesSent;
 }
 
 void TCPSocket::cleanup(const std::string& errorMessage)
@@ -67,5 +86,5 @@ void TCPSocket::cleanup(const std::string& errorMessage)
     std::cout << errorMessage << std::endl;
     closesocket(_socket);
     WSACleanup();
-    std::terminate();
+    throw std::runtime_error(errorMessage);
 }

@@ -145,6 +145,7 @@
     <ClCompile Include="SharedVariablesDispatcher.cpp" />
     <ClCompile Include="SocketServer.cpp" />
     <ClCompile Include="TCPSocket.cpp" />
+    <ClCompile Include="UnicodeConversions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Logger.h" />

@@ -2,7 +2,7 @@
 
 Logger::Logger(std::wstring outputFileName)
 {
-	outputFile.open(outputFileName, std::ios::out | std::ios::trunc);
+	outputFile.open(outputFileName, std::ios::out | std::ios::trunc | std::ios::binary);
 	assert(outputFile.is_open() && "Unable to open a file!");
 }
 
@@ -23,8 +23,9 @@ void Logger::send(std::wstring command)
 
 void Logger::log(std::wstring message)
 {
+	std::string converted = wideStringToString(message);
 	const time_t now = std::time(nullptr);
 	std::tm tm = {};
 	localtime_s(&tm, &now);
-	outputFile << std::put_time(&tm, L"%Y-%m-%d %X") << " : " << message << '\n';
+	outputFile << std::put_time(&tm, "%Y-%m-%d %X") << " : " << converted << '\n';
 }

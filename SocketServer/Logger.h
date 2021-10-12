@@ -5,6 +5,7 @@
 #include <time.h>
 #include <fstream>
 #include <cassert>
+#include "UnicodeConversions.h"
 
 class Logger
 {
@@ -15,6 +16,6 @@ public:
 	void send(std::wstring command);
 private:
 	void log(std::wstring message);
-	std::wofstream outputFile;
+	std::ofstream outputFile;
 };
 
