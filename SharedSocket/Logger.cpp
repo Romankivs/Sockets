@@ -27,6 +27,6 @@ void Logger::log(std::wstring message)
 	const time_t now = std::time(nullptr);
 	std::tm tm = {};
 	localtime_s(&tm, &now);
-	outputFile << std::put_time(&tm, "%Y-%m-%d %X") << " : " << converted << '\n';
+	outputFile << std::put_time(&tm, "%Y-%m-%d %X") << " : " << converted << std::endl; // flush in case of errors
 }
 #include "Logger.h"

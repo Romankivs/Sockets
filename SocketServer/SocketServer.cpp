@@ -1,9 +1,4 @@
-﻿#include <WS2tcpip.h> 
-#include <iostream>
-#include <string>
-#include <locale>
-#include "SharedVariablesDispatcher.h"
-#include "Logger.h"
+﻿#include "SharedVariablesDispatcher.h"
 #include "TCPSocket.h"
 
 #pragma comment (lib, "Ws2_32.lib") // link Ws2_32.lib
@@ -84,9 +79,9 @@ int main()
             std::wstring result = disp.analyzeClientsInput(reciveBuf);
             std::wcout << result << result.size() * sizeof(wchar_t) << std::endl;
             int iSendResult = clientSocket.sendSocket(result);
-            printf("Bytes sent: %d\n", iSendResult);
+            std::cout << "Bytes sent: " << iSendResult << std::endl;
         }
-        else if (bytesReceived == 0)
+        else 
             std::cout << "Connection closing..." << std::endl;
     } while (bytesReceived > 0);
 

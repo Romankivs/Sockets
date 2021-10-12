@@ -142,6 +142,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SocketClient.cpp" />
+    <ClCompile Include="VarDispatcherTester.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VarDispatcherTester.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

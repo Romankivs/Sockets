@@ -1,4 +1,5 @@
 #include "TCPSocket.h"
+#include "VarDispatcherTester.h"
 #pragma comment (lib, "Ws2_32.lib") // link Ws2_32.lib
 
 constexpr int DEFAULT_BUFFER_SIZE = 256;
@@ -65,29 +66,8 @@ int main()
         return 1;
     }
 
-    while (true)
-    {
-        // Send an initial buffer
-        std::wstring sendstr;
-        std::getline(std::wcin, sendstr);
-        if (sendstr == L"QUIT")
-            break;
-        int sendRes = connectSocket.sendSocket(sendstr);
-        printf("Bytes Sent: %ld\n", sendRes);
-
-        // Receive 
-        std::wstring recvbuf;
-        int bytesReceived = connectSocket.reciveSocket(recvbuf);
-        if (bytesReceived > 0)
-        {
-            std::cout << "Bytes received: " << bytesReceived << std::endl;
-            std::wcout << recvbuf << std::endl;
-        }
-        else if (bytesReceived == 0)
-            std::cout << "Connection closed" << std::endl;
-        else
-            std::cout << "recv failed with error: " << WSAGetLastError() << std::endl;
-    }
+    VarDispatcherTester tester;
+    tester.test(connectSocket, 100);
 
     system("pause");
     
