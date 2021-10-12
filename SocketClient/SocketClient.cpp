@@ -71,35 +71,28 @@ int main()
         WSACleanup();
         return 1;
     }
-    
-    // Send an initial buffer
-    std::wstring sendstr;
-    std::getline(std::wcin, sendstr);
-    std::string sendstrconv = wideStringToString(sendstr);
-    const int sendRes = send(connectSocket, sendstrconv.data(), sendstrconv.size() + 1, 0);
-    if (sendRes == SOCKET_ERROR) {
-        std::cout << "send failed with error: " <<  WSAGetLastError() << std::endl;
-        closesocket(connectSocket);
-        WSACleanup();
-        return 1;
-    }
 
-    printf("Bytes Sent: %ld\n", sendRes);
+    while (true)
+    {
+        // Send an initial buffer
+        std::wstring sendstr;
+        std::getline(std::wcin, sendstr);
+        std::string sendstrconv = wideStringToString(sendstr);
+        if (sendstrconv == "QUIT")
+            break;
+        const int sendRes = send(connectSocket, sendstrconv.data(), sendstrconv.size() + 1, 0);
+        if (sendRes == SOCKET_ERROR) {
+            std::cout << "send failed with error: " << WSAGetLastError() << std::endl;
+            closesocket(connectSocket);
+            WSACleanup();
+            return 1;
+        }
+        printf("Bytes Sent: %ld\n", sendRes);
 
-    // shutdown the connection since no more data will be sent
-    const int shutdownRes = shutdown(connectSocket, SD_SEND);
-    if (shutdownRes == SOCKET_ERROR) {
-        std::cout << "shutdown failed with error: " <<  WSAGetLastError() << std::endl;
-        closesocket(connectSocket);
-        WSACleanup();
-        return 1;
-    }
-
-    // Receive until the peer closes the connection
-    int bytesReceived;
-    char recvbuf[DEFAULT_BUFFER_SIZE];
-    const int recvbuflen = DEFAULT_BUFFER_SIZE;
-    do {
+        // Receive 
+        int bytesReceived;
+        char recvbuf[DEFAULT_BUFFER_SIZE];
+        const int recvbuflen = DEFAULT_BUFFER_SIZE;
         bytesReceived = recv(connectSocket, recvbuf, recvbuflen, 0);
         if (bytesReceived > 0)
         {
@@ -110,8 +103,16 @@ int main()
             std::cout << "Connection closed" << std::endl;
         else
             std::cout << "recv failed with error: " << WSAGetLastError() << std::endl;
+    }
 
-    } while (bytesReceived > 0);
+    // shutdown the connection since no more data will be sent
+    const int shutdownRes = shutdown(connectSocket, SD_SEND);
+    if (shutdownRes == SOCKET_ERROR) {
+        std::cout << "shutdown failed with error: " << WSAGetLastError() << std::endl;
+        closesocket(connectSocket);
+        WSACleanup();
+        return 1;
+    }
 
     system("pause");
     

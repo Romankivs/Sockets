@@ -114,8 +114,6 @@ int main()
 
             std::cout << recvbuf << std::endl;
 
-            // ??????????????????????????????????
-            // Echo the buffer back to the sender
             std::wstring result = disp.analyzeClientsInput(stringToWideString(std::string(recvbuf)));
             std::wcout << result << result.size() * sizeof(wchar_t) << std::endl;
             std::string resstr = wideStringToString(result);
