@@ -18,54 +18,54 @@ TCPSocket::TCPSocket(SOCKET otherSocket, Logger* logger)
     log = logger;
 }
 
-void TCPSocket::bindSocket(const sockaddr* addr, int namelen)
+void TCPSocket::bind(const sockaddr* addr, int namelen)
 {
-    const int bindRes = bind(_socket, addr, namelen);
+    const int bindRes = ::bind(_socket, addr, namelen);
     if (bindRes == SOCKET_ERROR)
     {
         cleanup("bind failed with error: " + std::to_string(WSAGetLastError()));
     }
 }
 
-int TCPSocket::tryToConnectSocket(const sockaddr* name, int namelen)
+int TCPSocket::tryToConnect(const sockaddr* name, int namelen)
 {
     return connect(_socket, name, namelen);
 }
 
-void TCPSocket::listenSocket(int maxClients)
+void TCPSocket::listen(int maxClients)
 {
-    const int listenRes = listen(_socket, maxClients);
+    const int listenRes = ::listen(_socket, maxClients);
     if (listenRes == SOCKET_ERROR)
     {
         cleanup("listen failed with error: " + std::to_string(WSAGetLastError()));
     }
 }
 
-TCPSocket TCPSocket::acceptSocket(sockaddr* addr, int* addrlen)
+TCPSocket TCPSocket::accept(sockaddr* addr, int* addrlen)
 {
-    SOCKET clientSocket = accept(_socket, addr, addrlen);
+    SOCKET clientSocket = ::accept(_socket, addr, addrlen);
     if (clientSocket == INVALID_SOCKET) {
         cleanup("accept failed with error: " + std::to_string(WSAGetLastError()));
     }
     return TCPSocket(clientSocket, log);
 }
 
-void TCPSocket::shutdownSocket(int how)
+void TCPSocket::shutdown(int how)
 {
-    const int shutdownRes = shutdown(_socket, how);
+    const int shutdownRes = ::shutdown(_socket, how);
     if (shutdownRes == SOCKET_ERROR) {
         cleanup("shutdown failed with error: " + std::to_string(WSAGetLastError()));
     }
 }
 
-void TCPSocket::closeSocket()
+void TCPSocket::close()
 {
-    closesocket(_socket);
+    ::closesocket(_socket);
 }
 
-int TCPSocket::reciveSocket(std::wstring& recivebuf)
+int TCPSocket::recive(std::wstring& recivebuf)
 {
-    int bytesReceived = recv(_socket, socketBuffer, DEFAULT_SOCKET_BUFFER_SIZE, 0);
+    int bytesReceived = ::recv(_socket, socketBuffer, DEFAULT_SOCKET_BUFFER_SIZE, 0);
     if (bytesReceived == SOCKET_ERROR)
     {
         cleanup("recv failed with error: " + std::to_string(WSAGetLastError()));
@@ -75,10 +75,10 @@ int TCPSocket::reciveSocket(std::wstring& recivebuf)
     return bytesReceived;
 }
 
-int TCPSocket::sendSocket(std::wstring sendbuf)
+int TCPSocket::send(std::wstring sendbuf)
 {
     std::string sendbufConverted = wideStringToString(sendbuf);
-    int bytesSent = send(_socket, sendbufConverted.c_str(), sendbufConverted.size() + 1, 0);
+    int bytesSent = ::send(_socket, sendbufConverted.c_str(), sendbufConverted.size() + 1, 0);
     if (bytesSent == SOCKET_ERROR) {
         cleanup("send failed with error: " + std::to_string(WSAGetLastError()));
     }
@@ -103,4 +103,18 @@ void TCPSocket::cleanup(const std::string& errorMessage)
     WSACleanup();
     system("pause");
     std::exit(1);
+}
+
+void initializeWSA()
+{
+    WSAData wsData;
+    WORD wsVer = MAKEWORD(2, 2);
+
+    int initResult = WSAStartup(wsVer, &wsData);
+    if (initResult != 0)
+    {
+        std::cout << "WSAStartup failed with error: " << initResult << std::endl;
+        system("pause");
+        std::exit(1);
+    }
 }

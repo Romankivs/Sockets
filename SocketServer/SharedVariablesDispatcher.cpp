@@ -26,19 +26,6 @@ std::wstring SharedVariablesDispatcher::analyzeClientsInput(std::wstring input)
 	return result;
 }
 
-std::vector<std::wstring> SharedVariablesDispatcher::tokenizeInput(std::wstring input)
-{
-	std::vector<std::wstring> result;
-	wchar_t* buffer = nullptr;
-	wchar_t* token = wcstok_s(input.data(), L" ", &buffer);
-	while (token != NULL)
-	{
-		result.push_back(std::wstring(token));
-		token = wcstok_s(NULL, L" ", &buffer);
-	}
-	return result;
-}
-
 std::wstring SharedVariablesDispatcher::who(std::vector<std::wstring> arguments)
 {
 	if (!arguments.empty())

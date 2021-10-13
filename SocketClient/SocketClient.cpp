@@ -1,5 +1,6 @@
 #include "TCPSocket.h"
-#include "VarDispatcherTester.h"
+#include "InputInterpreter.h"
+
 #pragma comment (lib, "Ws2_32.lib") // link Ws2_32.lib
 
 constexpr int DEFAULT_BUFFER_SIZE = 256;
@@ -15,15 +16,7 @@ int main()
     SetConsoleOutputCP(1251);
 
     // Init WinSock
-    WSAData wsData;
-    WORD wsVer = MAKEWORD(2, 2);
-
-    int initResult = WSAStartup(wsVer, &wsData);
-    if (initResult != 0)
-    {
-        std::cout << "WSAStartup failed with error: " << initResult << std::endl;
-        return 1;
-    }
+    initializeWSA();
 
     struct addrinfo hints;
     ZeroMemory(&hints, sizeof(hints));
@@ -36,7 +29,7 @@ int main()
     // Resolve the server address and port
     const int getAddrInfoRes = getaddrinfo("localhost", DEFAULT_PORT, &hints, &result);
     if (getAddrInfoRes != 0) {
-        std::cout << "getaddrinfo failed with error: " << initResult << std::endl;;
+        std::cout << "getaddrinfo failed with error: " << getAddrInfoRes << std::endl;;
         WSACleanup();
         return 1;
     }
@@ -49,9 +42,9 @@ int main()
         connectSocket = TCPSocket(ptr, &socketInfoLogger);
 
         // Connect to server.
-        int connectRes = connectSocket.tryToConnectSocket(ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
+        int connectRes = connectSocket.tryToConnect(ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
         if (connectRes == SOCKET_ERROR) {
-            connectSocket.closeSocket();
+            connectSocket.close();
             connectSocket.setUnderlyingSocket(INVALID_SOCKET);
             continue;
         }
@@ -66,12 +59,12 @@ int main()
         return 1;
     }
 
-    VarDispatcherTester tester;
-    tester.test(connectSocket, 100);
+    InputInterpreter interpreter;
+    interpreter.start(connectSocket);
 
     system("pause");
     
     // cleanup
-    connectSocket.closeSocket();
+    connectSocket.close();
     WSACleanup();
 }

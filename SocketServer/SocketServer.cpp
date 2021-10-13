@@ -19,15 +19,7 @@ int main()
     SharedVariablesDispatcher disp;
 
     // Init WinSock
-    WSAData wsData;
-    WORD wsVer = MAKEWORD(2,2);
-
-    int initResult = WSAStartup(wsVer, &wsData);
-    if (initResult != 0)
-    {
-        std::cout << "WSAStartup failed with error: " << initResult << std::endl;
-        return 1;
-    }
+    initializeWSA();
 
     struct addrinfo hints;
     ZeroMemory(&hints, sizeof(hints));
@@ -41,7 +33,7 @@ int main()
     // Resolve the server address and port
     const int getAddrInfoRes = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
     if (getAddrInfoRes!= 0) {
-        std::cout << "getaddrinfo failed with error: " << initResult << std::endl;;
+        std::cout << "getaddrinfo failed with error: " << getAddrInfoRes << std::endl;;
         WSACleanup();
         return 1;
     }
@@ -52,33 +44,33 @@ int main()
 
     // Bind the listening socket to an adress
 
-    listeningSocket.bindSocket(result->ai_addr, static_cast<int>(result->ai_addrlen));
+    listeningSocket.bind(result->ai_addr, static_cast<int>(result->ai_addrlen));
 
     freeaddrinfo(result);
 
-    listeningSocket.listenSocket(MAX_CLIENTS);
+    listeningSocket.listen(MAX_CLIENTS);
 
     // Accept a client
     
-    TCPSocket clientSocket = listeningSocket.acceptSocket(NULL, NULL);
+    TCPSocket clientSocket = listeningSocket.accept(NULL, NULL);
 
     // No other clients will be accepted - closing the listening socket
     
-    listeningSocket.closeSocket();
+    listeningSocket.close();
 
     // Work until the peer shuts down the connection
     int bytesReceived;
     do {
         std::wstring reciveBuf;
-        bytesReceived = clientSocket.reciveSocket(reciveBuf);
+        bytesReceived = clientSocket.recive(reciveBuf);
         if (bytesReceived > 0) {
             std::cout << "Bytes received: " << bytesReceived << std::endl;
 
             std::wcout << reciveBuf << std::endl;
 
             std::wstring result = disp.analyzeClientsInput(reciveBuf);
-            std::wcout << result << result.size() * sizeof(wchar_t) << std::endl;
-            int iSendResult = clientSocket.sendSocket(result);
+            std::wcout << result << std::endl;
+            int iSendResult = clientSocket.send(result);
             std::cout << "Bytes sent: " << iSendResult << std::endl;
         }
         else 
@@ -89,6 +81,6 @@ int main()
 
     // cleanup
 
-    clientSocket.closeSocket();
+    clientSocket.close();
     WSACleanup();
 }

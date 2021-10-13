@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <sstream>
+#include "Utility.h"
 
 struct Variable
 {
@@ -22,9 +23,6 @@ public:
 	SharedVariablesDispatcher();
 	// perform commands according to clients input and return command output or error message
 	std::wstring analyzeClientsInput(std::wstring input);
-
-	// split input into tokens
-	std::vector<std::wstring> tokenizeInput(std::wstring input);
 
 	// return info about the author
 	std::wstring who(std::vector<std::wstring> arguments);

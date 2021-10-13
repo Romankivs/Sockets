@@ -21,9 +21,15 @@
     <ClCompile Include="VarDispatcherTester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputInterpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VarDispatcherTester.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputInterpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

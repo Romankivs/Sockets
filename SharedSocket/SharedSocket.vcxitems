@@ -17,10 +17,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TCPSocket.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UnicodeConversions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TCPSocket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UnicodeConversions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utility.cpp" />
   </ItemGroup>
 </Project>

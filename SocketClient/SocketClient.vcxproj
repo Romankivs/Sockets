@@ -141,10 +141,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InputInterpreter.cpp" />
     <ClCompile Include="SocketClient.cpp" />
     <ClCompile Include="VarDispatcherTester.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputInterpreter.h" />
     <ClInclude Include="VarDispatcherTester.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

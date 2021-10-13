@@ -25,8 +25,8 @@ void VarDispatcherTester::test(TCPSocket dispatcherSocket, int numberOfChanges)
             bool success = false;
             while (!success)
             {
-                dispatcherSocket.sendSocket(sendstr);
-                dispatcherSocket.reciveSocket(dispatcherResponse);
+                dispatcherSocket.send(sendstr);
+                dispatcherSocket.recive(dispatcherResponse);
                 if (dispatcherResponse == L"SUCCESS")
                     success = true;
                 else if (dispatcherResponse != L"FAIL") // ERROR message
