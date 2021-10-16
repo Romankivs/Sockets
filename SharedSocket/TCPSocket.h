@@ -7,10 +7,11 @@
 #include "UnicodeConversions.h"
 #include "Logger.h"
 
-
 #define DEFAULT_SOCKET_BUFFER_SIZE 256
 
 void initializeWSA();
+void errorWSACleanup();
+int getAdressInfo(PCSTR name, PCSTR port, const ADDRINFO* hints, PADDRINFOA* result);
 
 class TCPSocket
 {
@@ -30,7 +31,7 @@ public:
 private:
 	void cleanup(const std::string& errorMessage);
 	SOCKET _socket;
-	char socketBuffer[DEFAULT_SOCKET_BUFFER_SIZE];
+	char socketBuffer[DEFAULT_SOCKET_BUFFER_SIZE] = {};
 	Logger* log;
 };
 

@@ -32,8 +32,7 @@ void VarDispatcherTester::test(TCPSocket dispatcherSocket, int numberOfChanges)
                 else if (dispatcherResponse != L"FAIL") // ERROR message
                 {
                     std::wcout << dispatcherResponse << std::endl;
-                    system("pause");
-                    std::exit(1);
+                    errorWSACleanup();
                 }
                 ++numberOfAttemptsForEachVar[var];
             }

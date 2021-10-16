@@ -141,11 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="InputInterpreter.cpp" />
     <ClCompile Include="SocketClient.cpp" />
     <ClCompile Include="VarDispatcherTester.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Client.h" />
     <ClInclude Include="InputInterpreter.h" />
     <ClInclude Include="VarDispatcherTester.h" />
   </ItemGroup>

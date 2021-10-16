@@ -100,9 +100,7 @@ void TCPSocket::cleanup(const std::string& errorMessage)
 {
     std::cout << errorMessage << std::endl;
     closesocket(_socket);
-    WSACleanup();
-    system("pause");
-    std::exit(1);
+    errorWSACleanup();
 }
 
 void initializeWSA()
@@ -117,4 +115,21 @@ void initializeWSA()
         system("pause");
         std::exit(1);
     }
+}
+
+void errorWSACleanup()
+{
+    WSACleanup();
+    system("pause");
+    std::exit(1);
+}
+
+int getAdressInfo(PCSTR name, PCSTR port, const ADDRINFO* hints, PADDRINFOA* result)
+{
+    const int getAddrInfoRes = getaddrinfo(name, port, hints, result);
+    if (getAddrInfoRes != 0) {
+        std::cout << "getaddrinfo failed with error: " << getAddrInfoRes << std::endl;
+        errorWSACleanup();
+    }
+    return getAddrInfoRes;
 }
