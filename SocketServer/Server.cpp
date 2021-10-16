@@ -47,15 +47,15 @@ void Server::start()
         std::wstring reciveBuf;
         bytesReceived = clientSocket.recive(reciveBuf);
         if (bytesReceived > 0) {
-            std::cout << "Bytes received: " << bytesReceived << std::endl;
+            std::wcout << L"Bytes received: " << bytesReceived << std::endl;
             std::wcout << reciveBuf << std::endl;
             std::wstring result = disp.analyzeClientsInput(reciveBuf);
             std::wcout << result << std::endl;
             int iSendResult = clientSocket.send(result);
-            std::cout << "Bytes sent: " << iSendResult << std::endl;
+            std::wcout << L"Bytes sent: " << iSendResult << std::endl;
         }
         else
-            std::cout << "Connection closing..." << std::endl;
+            std::wcout << L"Connection closing..." << std::endl;
     } while (bytesReceived > 0);
 
     system("pause");

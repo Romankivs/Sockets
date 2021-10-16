@@ -42,8 +42,8 @@ void Client::start()
         errorWSACleanup();
     }
 
-    InputInterpreter interpreter;
-    interpreter.start(connectSocket);
+    InputInterpreter interpreter(connectSocket);
+    interpreter.start();
 
     system("pause");
 
