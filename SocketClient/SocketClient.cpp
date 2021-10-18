@@ -5,6 +5,7 @@
 int main()
 {
     setlocale(LC_ALL, "Ukrainian");
+    SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
     Client client;

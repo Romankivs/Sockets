@@ -12,7 +12,6 @@
 struct Variable
 {
 	bool value;
-	unsigned int accessCounter;
 };
 
 constexpr size_t NUMBER_OF_VARIABLES = 10;
@@ -29,6 +28,9 @@ public:
 
 	// try to set variable and return L"SUCCESS" if done succesfully and L"FAILURE" if failed
 	std::wstring set(std::vector<std::wstring> arguments);
+
+	// return variable value
+	std::wstring get(std::vector<std::wstring> arguments);
 
 	// randomly check whether the variable can be changed and return true if succeeded or false if failed.
 	bool setVariableValue(size_t varNumber, bool value);

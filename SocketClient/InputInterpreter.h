@@ -2,6 +2,7 @@
 #include "Utility.h"
 #include "VarDispatcherTester.h"
 #include <unordered_map>
+#include <iostream>
 
 class InputInterpreter
 {

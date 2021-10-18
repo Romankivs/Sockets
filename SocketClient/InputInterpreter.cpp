@@ -46,11 +46,12 @@ void InputInterpreter::help(std::vector<std::wstring> arguments)
         std::wstring helpMessage;
         helpMessage += L"Client side commands:\nHELP - show this message\n";
         helpMessage += L"TEST [number of changes] - automaticaly test server:";
-        helpMessage += L"change each variable value[number of changes] times and show statistics\n";
+        helpMessage += L"change each variable's value[number of changes] times and show statistics\n";
         helpMessage += L"QUIT - finish working\n";
         helpMessage += L"Server side commands:\nWho - show information about the author\n";
-        helpMessage += L"SET [variable number(0-9)] (TRUE|FALSE) - try to change variables value";
+        helpMessage += L"SET [variable number(0-9)] (TRUE|FALSE) - try to change variable's value";
         helpMessage += L"(return SUCCESS or FAIL)\n";
+        helpMessage += L"GET [variable number(0-9)] - show variable's value";
         helpMessage += L"Remark: Anything other than client commands will be interpreted as a message for the server!";
         std::wcout << helpMessage << std::endl;
     }

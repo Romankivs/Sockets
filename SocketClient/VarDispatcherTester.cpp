@@ -42,24 +42,24 @@ void VarDispatcherTester::test(TCPSocket dispatcherSocket, int numberOfChanges)
 
 	auto endTime = std::chrono::high_resolution_clock::now();
     
-    std::cout << getTimeInfo(startTime, endTime);
-    std::cout << getAttemptsInfo(numberOfChanges);
+    std::wcout << getTimeInfo(startTime, endTime);
+    std::wcout << getAttemptsInfo(numberOfChanges);
 }
 
-std::string VarDispatcherTester::getTimeInfo(std::chrono::steady_clock::time_point start, std::chrono::steady_clock::time_point end)
+std::wstring VarDispatcherTester::getTimeInfo(std::chrono::steady_clock::time_point start, std::chrono::steady_clock::time_point end)
 {
     auto timeTaken = end - start;
     auto timeTakenInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeTaken);
-    return "Elapsed time in milliseconds: " + std::to_string(timeTakenInMilliseconds.count()) + " ms\n";
+    return L"Elapsed time in milliseconds: " + std::to_wstring(timeTakenInMilliseconds.count()) + L" ms\n";
 }
 
-std::string VarDispatcherTester::getAttemptsInfo(int numberOfChanges)
+std::wstring VarDispatcherTester::getAttemptsInfo(int numberOfChanges)
 {
-    std::string result = "Number of attempts made to succesfully change each variable " 
-        + std::to_string(numberOfChanges) +  " times:\n";
+    std::wstring result = L"Number of attempts made to succesfully change each variable " 
+        + std::to_wstring(numberOfChanges) +  L" times:\n";
     for (size_t i = 0; i < 10; ++i)
     {
-        result += "Var " + std::to_string(i) + " - " + std::to_string(numberOfAttemptsForEachVar[i]) + " attempts\n";
+        result += L"Var " + std::to_wstring(i) + L" - " + std::to_wstring(numberOfAttemptsForEachVar[i]) + L" attempts\n";
     }
     return result;
 }

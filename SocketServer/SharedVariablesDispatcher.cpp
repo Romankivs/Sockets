@@ -6,6 +6,7 @@ SharedVariablesDispatcher::SharedVariablesDispatcher()
 
 	commands.insert({ L"Who", &SharedVariablesDispatcher::who });
 	commands.insert({ L"SET", &SharedVariablesDispatcher::set });
+	commands.insert({ L"GET", &SharedVariablesDispatcher::get });
 
 	generator = std::default_random_engine();
 	generator.seed((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
@@ -65,6 +66,30 @@ std::wstring SharedVariablesDispatcher::set(std::vector<std::wstring> arguments)
 	if (setResult)
 		return L"SUCCESS";
 	return L"FAIL";
+}
+
+std::wstring SharedVariablesDispatcher::get(std::vector<std::wstring> arguments)
+{
+	if (arguments.size() != 1)
+		return L"ERROR: GET: Wrong number of arguments";
+	std::wstringstream ss;
+	ss << arguments[0];
+
+	size_t varNumber;
+	ss >> varNumber;
+	if (ss.fail() || varNumber < 0 || varNumber > 9)
+	{
+		return L"ERROR: GET: Wrong first argument";
+	}
+
+	if (variables[varNumber].value)
+	{
+		return L"TRUE";
+	}
+	else
+	{
+		return L"FALSE";
+	}
 }
 
 bool SharedVariablesDispatcher::setVariableValue(size_t varNumber, bool value)
